@@ -153,6 +153,14 @@
         </div>
 
         <div class="card">
+            <h2>🛠️ 配置工具</h2>
+            <p style="margin-bottom: 20px;">使用配置向导快速生成配置文件</p>
+            <p>
+                <a href="config-wizard.html" class="btn">⚙️ 打开配置向导</a>
+            </p>
+        </div>
+
+        <div class="card">
             <h2>⚡ 快速安装</h2>
             <div class="tabs">
                 <button class="tab active" onclick="showTab('npm')">npm</button>
@@ -207,6 +215,21 @@ cd my-agent</div>
 openclaw gateway start</div>
                 </div>
             </div>
+        </div>
+
+        <div class="card">
+            <h2>🔧 实用脚本</h2>
+            <div class="code-block"># 环境检测
+curl -fsSL https://raw.githubusercontent.com/students209/openclaw-starter/main/scripts/check-env.sh | bash
+
+# 一键安装
+curl -fsSL https://raw.githubusercontent.com/students209/openclaw-starter/main/scripts/install.sh | bash
+
+# 配置验证
+curl -fsSL https://raw.githubusercontent.com/students209/openclaw-starter/main/scripts/validate-config.sh | bash
+
+# 快速启动
+curl -fsSL https://raw.githubusercontent.com/students209/openclaw-starter/main/scripts/quick-start.sh | bash my-agent</div>
         </div>
 
         <div class="card">

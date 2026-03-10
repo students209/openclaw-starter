@@ -2,6 +2,11 @@
 
 一键安装，轻松上手 AI Agent 开发
 
+## 🌐 在线工具
+
+- 📖 [入门指南](https://openclaw-starter.vercel.app)
+- ⚙️ [配置向导](https://openclaw-starter.vercel.app/config)
+
 ## 快速开始
 
 ### 方式一：npm 安装（推荐）
@@ -102,12 +107,16 @@ OpenClaw 支持多通道部署：
 ```
 openclaw-starter/
 ├── scripts/
-│   ├── check-env.sh    # 环境检测脚本
-│   └── install.sh      # 一键安装脚本
+│   ├── check-env.sh       # 环境检测脚本
+│   ├── install.sh         # 一键安装脚本
+│   ├── validate-config.sh # 配置验证脚本
+│   └── quick-start.sh     # 快速启动脚本
 ├── web/
-│   └── index.html      # Web 引导页面
+│   ├── index.html         # Web 引导页面
+│   └── config-wizard.html # 配置向导页面
 ├── docs/
-│   └── faq.md          # 常见问题文档
+│   └── faq.md             # 常见问题文档
+├── vercel.json            # Vercel 部署配置
 └── README.md
 ```
 
