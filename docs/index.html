@@ -309,18 +309,25 @@
                 ? `"baseUrl": "${config.apiKey}", "apiKey": "ollama-local", "api": "ollama"`
                 : `"apiKey": "${config.apiKey}"`;
             
-            const jsonConfig = `{"models":{"mode":"merge","providers":{"${config.provider}":{${providerConfig}}}}}`;
+            const jsonConfig = JSON.stringify({
+                models: {
+                    mode: "merge",
+                    providers: {
+                        [config.provider]: JSON.parse(`{${providerConfig}}`)
+                    }
+                }
+            });
             
             return `@echo off
-chcp 65001 >nul
+chcp 65001 >nul 2>nul
 echo ========================================
 echo   OpenClaw 一键安装
 echo ========================================
 echo.
 
 :: 检查 Node.js
-node -v >nul 2>nul
-if errorlevel 1 (
+where node >nul 2>nul
+if %ERRORLEVEL% neq 0 (
     echo [错误] 未检测到 Node.js
     echo 请先安装 Node.js: https://nodejs.org/
     pause
@@ -338,13 +345,13 @@ npm config set registry https://registry.npmmirror.com
 :: 安装 OpenClaw
 echo.
 echo [3/4] 安装 OpenClaw...
-npm install -g openclaw
+call npm install -g openclaw
 
 :: 创建配置文件
 echo.
 echo [4/4] 创建配置文件...
 if not exist "%USERPROFILE%\\.openclaw" mkdir "%USERPROFILE%\\.openclaw"
-echo ${jsonConfig} > "%USERPROFILE%\\.openclaw\\openclaw.json"
+(echo ${jsonConfig}) > "%USERPROFILE%\\.openclaw\\openclaw.json"
 
 echo.
 echo ========================================
