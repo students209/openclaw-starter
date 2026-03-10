@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw 入门助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .step:last-child {
+            border-bottom: none;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .step-content h3 {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .step-content p {
+            color: #666;
+            line-height: 1.6;
+        }
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .faq-item {
+            margin-bottom: 15px;
+        }
+        .faq-item h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .faq-item p {
+            color: #666;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+        .footer {
+            text-align: center;
+            color: white;
+            opacity: 0.8;
+            margin-top: 40px;
+        }
+        .footer a {
+            color: white;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦞 OpenClaw 入门助手</h1>
+            <p>一键安装，轻松上手 AI Agent 开发</p>
+        </div>
+
+        <div class="card">
+            <h2>⚡ 快速安装</h2>
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('npm')">npm</button>
+                <button class="tab" onclick="showTab('script')">安装脚本</button>
+            </div>
+            <div id="npm-tab">
+                <div class="code-block">npm install -g openclaw</div>
+                <p style="color: #666; margin-top: 10px;">需要 Node.js 18.x 或更高版本</p>
+            </div>
+            <div id="script-tab" style="display: none;">
+                <div class="code-block">curl -fsSL https://openclaw.ai/install.sh | bash</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 安装步骤</h2>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>环境检测</h3>
+                    <p>运行检测脚本，确认系统满足安装要求</p>
+                    <div class="code-block">curl -fsSL https://openclaw.ai/check-env.sh | bash</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>安装 OpenClaw</h3>
+                    <p>使用 npm 全局安装 OpenClaw CLI</p>
+                    <div class="code-block">npm install -g openclaw</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>初始化项目</h3>
+                    <p>创建你的第一个 AI Agent 项目</p>
+                    <div class="code-block">openclaw init my-agent
+cd my-agent</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>配置并启动</h3>
+                    <p>配置 API Key 并启动 Gateway 服务</p>
+                    <div class="code-block">openclaw configure
+openclaw gateway start</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>❓ 常见问题</h2>
+            
+            <div class="faq-item">
+                <h4>Q: Node.js 版本过低怎么办？</h4>
+                <p>A: 建议升级到 Node.js 18.x 或更高版本。可以使用 nvm 管理 Node 版本：<br>
+                <code>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash</code><br>
+                <code>nvm install 20</code></p>
+            </div>
+
+            <div class="faq-item">
+                <h4>Q: npm 安装速度慢怎么办？</h4>
+                <p>A: 国内用户建议使用淘宝镜像：<br>
+                <code>npm config set registry https://registry.npmmirror.com</code></p>
+            </div>
+
+            <div class="faq-item">
+                <h4>Q: 没有 API Key 怎么办？</h4>
+                <p>A: OpenClaw 支持多种 AI 提供商。推荐使用：<br>
+                - <a href="https://platform.openai.com/">OpenAI</a><br>
+                - <a href="https://console.anthropic.com/">Anthropic Claude</a><br>
+                - <a href="https://dashscope.aliyun.com/">阿里云通义千问</a></p>
+            </div>
+
+            <div class="faq-item">
+                <h4>Q: 如何在微信/Telegram 上使用？</h4>
+                <p>A: OpenClaw 支持多通道部署。运行 <code>openclaw configure</code> 后选择对应的通道类型，按提示配置即可。</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 相关资源</h2>
+            <p>
+                <a href="https://docs.openclaw.ai" class="btn">📖 官方文档</a>
+                <a href="https://github.com/openclaw/openclaw" class="btn">💻 GitHub</a>
+                <a href="https://discord.com/invite/clawd" class="btn">💬 Discord 社区</a>
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>Made with ❤️ by OpenClaw Team</p>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('npm-tab').style.display = tab === 'npm' ? 'block' : 'none';
+            document.getElementById('script-tab').style.display = tab === 'script' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
