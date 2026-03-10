@@ -351,7 +351,9 @@ call npm install -g openclaw
 echo.
 echo [4/4] 创建配置文件...
 if not exist "%USERPROFILE%\\.openclaw" mkdir "%USERPROFILE%\\.openclaw"
-(echo ${jsonConfig}) > "%USERPROFILE%\\.openclaw\\openclaw.json"
+powershell -Command "$json = @'
+${jsonConfig}
+'@; $json | Out-File -FilePath \"$USERPROFILE\\.openclaw\\openclaw.json\" -Encoding utf8"
 
 echo.
 echo ========================================
