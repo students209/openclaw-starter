@@ -12,78 +12,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Test macOS install script syntax
+      - name: Test macOS install script
         run: |
           # 创建测试脚本
           cat > test-install.sh << 'EOF'
           #!/bin/bash
-          # OpenClaw 一键安装脚本 (测试版)
-          
           set -e
           
-          echo "================================"
-          echo "  OpenClaw 一键安装 (测试模式)"
-          echo "================================"
-          echo ""
-          
-          # 检查 Node.js
+          echo "[1/3] 检查 Node.js..."
           if ! command -v node &> /dev/null; then
-              echo "❌ 未检测到 Node.js"
+              echo "[错误] 未检测到 Node.js"
               exit 1
           fi
+          echo "      已安装: $(node -v)"
           
-          echo "✓ 检测到 Node.js: $(node -v)"
-          
-          # 设置镜像
-          echo ""
-          echo "配置 npm 镜像..."
+          echo "[2/3] 安装 OpenClaw..."
           npm config set registry https://registry.npmmirror.com
-          
-          # 安装 OpenClaw
-          echo ""
-          echo "安装 OpenClaw..."
           npm install -g openclaw
           
-          # 验证安装
-          echo ""
-          echo "验证安装..."
-          openclaw --version
-          
-          # 创建配置文件
-          echo ""
-          echo "创建配置文件..."
-          mkdir -p ~/.openclaw
-          
-          cat > ~/.openclaw/openclaw.json << 'CONFIGEOF'
-          {
-            "models": {
-              "mode": "merge",
-              "providers": {
-                "dashscope": {
-                  "apiKey": "test-key"
-                }
-              }
-            }
-          }
-          CONFIGEOF
-          
-          echo "✓ 配置文件创建成功"
-          cat ~/.openclaw/openclaw.json
-          
-          echo ""
-          echo "================================"
-          echo "✅ 测试完成!"
-          echo "================================"
+          echo "[3/3] 验证安装..."
+          if ! command -v openclaw &> /dev/null; then
+              echo "[警告] 安装未成功"
+              exit 1
+          fi
+          echo "      安装成功"
           EOF
           
           chmod +x test-install.sh
           bash -n test-install.sh && echo "✓ 脚本语法正确"
-      
-      - name: Run install script (dry run)
-        run: |
-          # 只测试语法，不实际安装
-          bash -n test-install.sh
-          echo "✓ macOS脚本语法验证通过"
 
   test-linux:
     runs-on: ubuntu-latest
@@ -97,28 +53,27 @@ jobs:
           #!/bin/bash
           set -e
           
-          echo "================================"
-          echo "  OpenClaw 一键安装 (Linux 测试)"
-          echo "================================"
-          
-          # 检查 Node.js
+          echo "[1/3] 检查 Node.js..."
           if ! command -v node &> /dev/null; then
-              echo "❌ 未检测到 Node.js"
+              echo "[错误] 未检测到 Node.js"
               exit 1
           fi
+          echo "      已安装: $(node -v)"
           
-          echo "✓ 检测到 Node.js: $(node -v)"
+          echo "[2/3] 安装 OpenClaw..."
+          npm config set registry https://registry.npmmirror.com
+          npm install -g openclaw
           
-          # 创建配置文件测试
-          mkdir -p ~/.openclaw
-          echo '{"models":{"mode":"merge","providers":{"dashscope":{"apiKey":"test"}}}}' > ~/.openclaw/openclaw.json
-          cat ~/.openclaw/openclaw.json
-          
-          echo "✓ Linux脚本语法验证通过"
+          echo "[3/3] 验证安装..."
+          if ! command -v openclaw &> /dev/null; then
+              echo "[警告] 安装未成功"
+              exit 1
+          fi
+          echo "      安装成功"
           EOF
           
           chmod +x test-install.sh
-          bash -n test-install.sh
+          bash -n test-install.sh && echo "✓ 脚本语法正确"
           ./test-install.sh
 
   test-windows:
@@ -130,29 +85,27 @@ jobs:
         shell: cmd
         run: |
           @echo off
-          echo ================================
-          echo   OpenClaw Windows Script Test
-          echo ================================
-          
-          :: 检查 Node.js
+          echo [1/3] 检查 Node.js...
           where node >nul 2>nul
           if %ERRORLEVEL% neq 0 (
               echo [ERROR] Node.js not found
               exit /b 1
           )
-          
-          echo [OK] Node.js detected
+          echo       已安装:
           node -v
           
-          :: 测试JSON写入（简化版本）
-          echo [TEST] Testing JSON write...
-          if not exist "%USERPROFILE%\.openclaw" mkdir "%USERPROFILE%\.openclaw"
-          > "%USERPROFILE%\.openclaw\openclaw.json" echo {"models":{"mode":"merge","providers":{"dashscope":{"apiKey":"test"}}}}
+          echo [2/3] 安装 OpenClaw...
+          npm config set registry https://registry.npmmirror.com
+          call npm install -g openclaw
           
-          echo [OK] Config file created
-          type "%USERPROFILE%\.openclaw\openclaw.json"
+          echo [3/3] 验证安装...
+          where openclaw >nul 2>nul
+          if %ERRORLEVEL% neq 0 (
+              echo [WARNING] 安装未成功
+              exit /b 1
+          )
+          echo       安装成功:
+          openclaw --version 2>nul | findstr "OpenClaw"
           
           echo.
-          echo ================================
           echo   Windows Script Test PASSED
-          echo ================================
