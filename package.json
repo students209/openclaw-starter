@@ -2,7 +2,6 @@
   "name": "openclaw-starter",
   "version": "1.0.0",
   "description": "OpenClaw 入门助手 - 一键安装，轻松上手 AI Agent 开发",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

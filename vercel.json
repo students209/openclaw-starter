@@ -1,23 +1,12 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "web/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/",
-      "dest": "/web/index.html"
+      "source": "/",
+      "destination": "/index.html"
     },
     {
-      "src": "/config",
-      "dest": "/web/config-wizard.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/web/$1"
+      "source": "/config",
+      "destination": "/config-wizard.html"
     }
   ]
 }

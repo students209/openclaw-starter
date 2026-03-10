@@ -177,13 +177,13 @@
 
         <div class="card">
             <h2>📋 安装步骤</h2>
-            
+
             <div class="step">
                 <div class="step-number">1</div>
                 <div class="step-content">
                     <h3>环境检测</h3>
                     <p>运行检测脚本，确认系统满足安装要求</p>
-                    <div class="code-block">curl -fsSL https://openclaw.ai/check-env.sh | bash</div>
+                    <div class="code-block">curl -fsSL https://raw.githubusercontent.com/students209/openclaw-starter/main/scripts/check-env.sh | bash</div>
                 </div>
             </div>
 
@@ -234,7 +234,7 @@ curl -fsSL https://raw.githubusercontent.com/students209/openclaw-starter/main/s
 
         <div class="card">
             <h2>❓ 常见问题</h2>
-            
+
             <div class="faq-item">
                 <h4>Q: Node.js 版本过低怎么办？</h4>
                 <p>A: 建议升级到 Node.js 18.x 或更高版本。可以使用 nvm 管理 Node 版本：<br>
@@ -280,7 +280,7 @@ curl -fsSL https://raw.githubusercontent.com/students209/openclaw-starter/main/s
         function showTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
-            
+
             document.getElementById('npm-tab').style.display = tab === 'npm' ? 'block' : 'none';
             document.getElementById('script-tab').style.display = tab === 'script' ? 'block' : 'none';
         }
