@@ -3,147 +3,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenClaw 入门助手</title>
+    <title>OpenClaw 一键安装</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
+            min-height: 100vh; color: #333;
         }
-        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
-        .header { text-align: center; color: white; margin-bottom: 40px; }
-        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
-        .header p { font-size: 1.2em; opacity: 0.9; }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; color: white; margin-bottom: 30px; }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
         .card {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            background: white; border-radius: 16px; padding: 30px;
+            margin-bottom: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
-        .card h2 { color: #667eea; margin-bottom: 20px; }
-        .code-block {
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 15px 20px;
-            border-radius: 8px;
-            font-family: Monaco, Menlo, monospace;
-            font-size: 14px;
-            margin: 10px 0;
-            overflow-x: auto;
+        .card h2 { color: #667eea; margin-bottom: 20px; font-size: 1.3em; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        .form-group .hint { font-size: 12px; color: #888; margin-top: 4px; }
+        input, select {
+            width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 10px;
+            font-size: 16px; transition: border-color 0.2s;
         }
+        input:focus { outline: none; border-color: #667eea; }
+        .provider-select {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;
+        }
+        .provider-btn {
+            padding: 15px 10px; border: 2px solid #e0e0e0; border-radius: 10px;
+            background: white; cursor: pointer; text-align: center; transition: all 0.2s;
+        }
+        .provider-btn:hover { border-color: #667eea; }
+        .provider-btn.selected { border-color: #667eea; background: #f0f4ff; }
+        .provider-btn .icon { font-size: 24px; margin-bottom: 5px; }
+        .provider-btn .name { font-size: 13px; font-weight: 500; }
         .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 500;
-            margin-top: 10px;
+            display: block; width: 100%; padding: 16px; border: none; border-radius: 10px;
+            font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.2s;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4); }
-        .step { display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid #eee; }
-        .step-number {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: bold; flex-shrink: 0;
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2); color: white;
         }
-        .step-content h3 { margin-bottom: 8px; }
-        .step-content p { color: #666; line-height: 1.6; }
-        .faq-item { margin-bottom: 15px; }
-        .faq-item h4 { color: #667eea; margin-bottom: 8px; }
-        .faq-item p { color: #666; padding-left: 20px; line-height: 1.6; }
-        .footer { text-align: center; color: white; opacity: 0.8; margin-top: 40px; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .os-select { display: flex; gap: 10px; margin-bottom: 20px; }
+        .os-btn {
+            flex: 1; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px;
+            background: white; cursor: pointer; text-align: center;
+        }
+        .os-btn.selected { border-color: #667eea; background: #f0f4ff; }
+        .success-box {
+            background: #e8f5e9; border: 2px solid #4caf50; border-radius: 10px;
+            padding: 20px; text-align: center; margin-top: 20px;
+        }
+        .success-box h3 { color: #2e7d32; margin-bottom: 10px; }
+        .step-indicator {
+            display: flex; justify-content: center; gap: 10px; margin-bottom: 30px;
+        }
+        .step-dot {
+            width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.3);
+        }
+        .step-dot.active { background: white; }
+        .step-dot.done { background: #4caf50; }
+        .hidden { display: none; }
+        .footer { text-align: center; color: white; opacity: 0.7; margin-top: 20px; font-size: 14px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🦞 OpenClaw 入门助手</h1>
-            <p>一键安装，轻松上手 AI Agent 开发</p>
+            <h1>🦞 OpenClaw 一键安装</h1>
+            <p>3步完成安装，开始你的 AI Agent 之旅</p>
+            <div class="step-indicator">
+                <div class="step-dot active" id="dot1"></div>
+                <div class="step-dot" id="dot2"></div>
+                <div class="step-dot" id="dot3"></div>
+            </div>
         </div>
 
-        <div class="card">
-            <h2>🛠️ 配置工具</h2>
-            <p style="margin-bottom: 20px;">使用配置向导快速生成配置文件</p>
-            <a href="./config-wizard.html" class="btn">⚙️ 打开配置向导</a>
-        </div>
-
-        <div class="card">
-            <h2>⚡ 快速安装</h2>
-            <div class="code-block">npm install -g openclaw</div>
-            <p style="color: #666; margin-top: 10px;">需要 Node.js 18.x 或更高版本</p>
-        </div>
-
-        <div class="card">
-            <h2>📋 安装步骤</h2>
-            <div class="step">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <h3>环境检测</h3>
-                    <p>运行检测脚本，确认系统满足安装要求</p>
-                    <div class="code-block">curl -fsSL https://raw.githubusercontent.com/students209/openclaw-starter/main/scripts/check-env.sh | bash</div>
+        <!-- Step 1: 选择操作系统 -->
+        <div class="card" id="step1">
+            <h2>步骤 1/3：选择你的操作系统</h2>
+            <div class="os-select">
+                <div class="os-btn selected" data-os="macos" onclick="selectOS(this)">
+                    <div style="font-size: 32px;">🍎</div>
+                    <div style="margin-top: 8px; font-weight: 500;">macOS</div>
+                </div>
+                <div class="os-btn" data-os="windows" onclick="selectOS(this)">
+                    <div style="font-size: 32px;">🪟</div>
+                    <div style="margin-top: 8px; font-weight: 500;">Windows</div>
+                </div>
+                <div class="os-btn" data-os="linux" onclick="selectOS(this)">
+                    <div style="font-size: 32px;">🐧</div>
+                    <div style="margin-top: 8px; font-weight: 500;">Linux</div>
                 </div>
             </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <h3>安装 OpenClaw</h3>
-                    <p>使用 npm 全局安装 OpenClaw CLI</p>
-                    <div class="code-block">npm install -g openclaw</div>
+            <button class="btn btn-primary" onclick="goStep2()">下一步 →</button>
+        </div>
+
+        <!-- Step 2: 配置 AI 模型 -->
+        <div class="card hidden" id="step2">
+            <h2>步骤 2/3：配置 AI 模型</h2>
+            <p style="color: #666; margin-bottom: 15px;">选择你要使用的 AI 模型并填入 API Key</p>
+            
+            <div class="form-group">
+                <label>选择 AI 模型</label>
+                <div class="provider-select">
+                    <div class="provider-btn selected" data-provider="dashscope" onclick="selectProvider(this)">
+                        <div class="icon">🔮</div>
+                        <div class="name">通义千问</div>
+                    </div>
+                    <div class="provider-btn" data-provider="openai" onclick="selectProvider(this)">
+                        <div class="icon">🤖</div>
+                        <div class="name">OpenAI</div>
+                    </div>
+                    <div class="provider-btn" data-provider="anthropic" onclick="selectProvider(this)">
+                        <div class="icon">🧠</div>
+                        <div class="name">Claude</div>
+                    </div>
+                    <div class="provider-btn" data-provider="moonshot" onclick="selectProvider(this)">
+                        <div class="icon">🌙</div>
+                        <div class="name">Kimi</div>
+                    </div>
+                    <div class="provider-btn" data-provider="google" onclick="selectProvider(this)">
+                        <div class="icon">🔷</div>
+                        <div class="name">Gemini</div>
+                    </div>
+                    <div class="provider-btn" data-provider="ollama" onclick="selectProvider(this)">
+                        <div class="icon">🦙</div>
+                        <div class="name">Ollama本地</div>
+                    </div>
                 </div>
             </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <h3>初始化项目</h3>
-                    <p>创建你的第一个 AI Agent 项目</p>
-                    <div class="code-block">openclaw init my-agent && cd my-agent</div>
-                </div>
+
+            <div class="form-group" id="apiKeyGroup">
+                <label id="apiKeyLabel">阿里云 API Key</label>
+                <input type="password" id="apiKey" placeholder="sk-xxxxxxxxxxxxxxxx">
+                <div class="hint" id="apiKeyHint">获取地址：<a href="https://dashscope.aliyun.com/" target="_blank">dashscope.aliyun.com</a></div>
             </div>
-            <div class="step">
-                <div class="step-number">4</div>
-                <div class="step-content">
-                    <h3>配置并启动</h3>
-                    <p>配置 API Key 并启动 Gateway 服务</p>
-                    <div class="code-block">openclaw configure && openclaw gateway start</div>
-                </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-primary" style="background: #e0e0e0; color: #333;" onclick="goStep1()">← 上一步</button>
+                <button class="btn btn-primary" onclick="goStep3()">下一步 →</button>
             </div>
         </div>
 
-        <div class="card">
-            <h2>❓ 常见问题</h2>
-            <div class="faq-item">
-                <h4>Q: Node.js 版本过低怎么办？</h4>
-                <p>A: 建议升级到 Node.js 18.x 或更高版本。可以使用 nvm 管理 Node 版本</p>
+        <!-- Step 3: 下载安装 -->
+        <div class="card hidden" id="step3">
+            <h2>步骤 3/3：下载并运行安装包</h2>
+            
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px; color: #333;">📋 你的配置</h3>
+                <p><strong>操作系统：</strong><span id="summaryOS">macOS</span></p>
+                <p><strong>AI 模型：</strong><span id="summaryProvider">通义千问</span></p>
             </div>
-            <div class="faq-item">
-                <h4>Q: npm 安装速度慢怎么办？</h4>
-                <p>A: 国内用户建议使用淘宝镜像：npm config set registry https://registry.npmmirror.com</p>
-            </div>
-            <div class="faq-item">
-                <h4>Q: 没有 API Key 怎么办？</h4>
-                <p>A: OpenClaw 支持多种 AI 提供商：OpenAI、Claude、通义千问、Kimi 等</p>
-            </div>
-        </div>
 
-        <div class="card">
-            <h2>📚 相关资源</h2>
-            <p>
-                <a href="https://docs.openclaw.ai" class="btn">📖 官方文档</a>
-                <a href="https://github.com/openclaw/openclaw" class="btn">💻 GitHub</a>
-                <a href="https://discord.com/invite/clawd" class="btn">💬 Discord</a>
-            </p>
+            <button class="btn btn-primary" onclick="downloadInstaller()" id="downloadBtn">
+                📥 下载安装包
+            </button>
+
+            <div class="success-box hidden" id="successBox">
+                <h3>✅ 安装包已下载！</h3>
+                <p style="color: #666; margin-bottom: 15px;">请按以下步骤完成安装：</p>
+                <div style="text-align: left; background: white; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                    <p id="installInstructions"></p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-primary" style="background: #e0e0e0; color: #333;" onclick="goStep2()">← 上一步</button>
+            </div>
         </div>
 
         <div class="footer">
-            <p>Made with ❤️ by OpenClaw Team</p>
+            <p>遇到问题？<a href="https://github.com/students209/openclaw-starter/issues" style="color: white;">提交 Issue</a> | 
+            <a href="https://docs.openclaw.ai" style="color: white;">查看文档</a></p>
         </div>
     </div>
+
+    <script>
+        let config = {
+            os: 'macos',
+            provider: 'dashscope',
+            apiKey: ''
+        };
+
+        const providerInfo = {
+            dashscope: { name: '通义千问', label: '阿里云 API Key', hint: 'dashscope.aliyun.com' },
+            openai: { name: 'OpenAI', label: 'OpenAI API Key', hint: 'platform.openai.com' },
+            anthropic: { name: 'Claude', label: 'Anthropic API Key', hint: 'console.anthropic.com' },
+            moonshot: { name: 'Kimi', label: 'Moonshot API Key', hint: 'platform.moonshot.cn' },
+            google: { name: 'Gemini', label: 'Google AI API Key', hint: 'ai.google.dev' },
+            ollama: { name: 'Ollama本地', label: 'Ollama 地址', hint: '默认: http://127.0.0.1:11434' }
+        };
+
+        function selectOS(el) {
+            document.querySelectorAll('.os-btn').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+            config.os = el.dataset.os;
+        }
+
+        function selectProvider(el) {
+            document.querySelectorAll('.provider-btn').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+            config.provider = el.dataset.provider;
+            
+            const info = providerInfo[config.provider];
+            document.getElementById('apiKeyLabel').textContent = info.label;
+            document.getElementById('apiKeyHint').innerHTML = 
+                config.provider === 'ollama' 
+                    ? info.hint 
+                    : `获取地址：<a href="https://${info.hint}" target="_blank">${info.hint}</a>`;
+            document.getElementById('apiKey').placeholder = config.provider === 'ollama' ? 'http://127.0.0.1:11434' : 'sk-xxxxxxxxxxxxxxxx';
+        }
+
+        function updateDots(step) {
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById('dot' + i);
+                dot.classList.remove('active', 'done');
+                if (i < step) dot.classList.add('done');
+                if (i === step) dot.classList.add('active');
+            }
+        }
+
+        function goStep1() {
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            updateDots(1);
+        }
+
+        function goStep2() {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            updateDots(2);
+        }
+
+        function goStep3() {
+            config.apiKey = document.getElementById('apiKey').value;
+            if (!config.apiKey) {
+                alert('请输入 API Key');
+                return;
+            }
+            
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+            updateDots(3);
+            
+            // 更新摘要
+            document.getElementById('summaryOS').textContent = 
+                config.os === 'macos' ? 'macOS' : config.os === 'windows' ? 'Windows' : 'Linux';
+            document.getElementById('summaryProvider').textContent = providerInfo[config.provider].name;
+        }
+
+        function downloadInstaller() {
+            const script = generateScript();
+            const blob = new Blob([script], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = config.os === 'windows' ? 'install-openclaw.bat' : 'install-openclaw.sh';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            // 显示安装说明
+            document.getElementById('successBox').classList.remove('hidden');
+            const instructions = config.os === 'macos' 
+                ? `<strong>macOS 安装步骤：</strong><br><br>
+                   1. 打开"终端"（按 Cmd+空格，输入 Terminal）<br>
+                   2. 输入：<code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">cd ~/Downloads</code><br>
+                   3. 输入：<code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">chmod +x install-openclaw.sh</code><br>
+                   4. 输入：<code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">./install-openclaw.sh</code><br>
+                   5. 等待安装完成！`
+                : config.os === 'windows'
+                ? `<strong>Windows 安装步骤：</strong><br><br>
+                   1. 双击下载的 <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">install-openclaw.bat</code> 文件<br>
+                   2. 如果提示安全警告，点击"仍要运行"<br>
+                   3. 等待安装完成！`
+                : `<strong>Linux 安装步骤：</strong><br><br>
+                   1. 打开终端<br>
+                   2. 输入：<code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">chmod +x install-openclaw.sh</code><br>
+                   3. 输入：<code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">./install-openclaw.sh</code><br>
+                   4. 等待安装完成！`;
+            
+            document.getElementById('installInstructions').innerHTML = instructions;
+        }
+
+        function generateScript() {
+            if (config.os === 'windows') {
+                return generateWindowsScript();
+            } else {
+                return generateUnixScript();
+            }
+        }
+
+        function generateWindowsScript() {
+            const providerConfig = config.provider === 'ollama'
+                ? `"baseUrl": "${config.apiKey}", "apiKey": "ollama-local", "api": "ollama"`
+                : `"apiKey": "${config.apiKey}"`;
+            
+            return `@echo off
+chcp 65001 >nul
+echo ========================================
+echo   OpenClaw 一键安装
+echo ========================================
+echo.
+
+:: 检查 Node.js
+where node >nul 2>nul
+if %errorlevel% neq 0 (
+    echo [错误] 未检测到 Node.js
+    echo 请先安装 Node.js: https://nodejs.org/
+    pause
+    exit /b 1
+)
+
+echo [1/4] 检测到 Node.js
+node -v
+
+:: 设置镜像
+echo.
+echo [2/4] 配置 npm 镜像...
+npm config set registry https://registry.npmmirror.com
+
+:: 安装 OpenClaw
+echo.
+echo [3/4] 安装 OpenClaw...
+npm install -g openclaw
+
+:: 创建配置文件
+echo.
+echo [4/4] 创建配置文件...
+if not exist "%USERPROFILE%\\.openclaw" mkdir "%USERPROFILE%\\.openclaw"
+
+echo {> "%USERPROFILE%\\.openclaw\\openclaw.json"
+echo   "models": {>> "%USERPROFILE%\\.openclaw\\openclaw.json"
+echo     "mode": "merge",>> "%USERPROFILE%\\.openclaw\\openclaw.json"
+echo     "providers": {>> "%USERPROFILE%\\.openclaw\\openclaw.json"
+echo       "${config.provider}": {>> "%USERPROFILE%\\.openclaw\\openclaw.json"
+echo         ${providerConfig}>> "%USERPROFILE%\\.openclaw\\openclaw.json"
+echo       }>> "%USERPROFILE%\\.openclaw\\openclaw.json"
+echo     }>> "%USERPROFILE%\\.openclaw\\openclaw.json"
+echo   }>> "%USERPROFILE%\\.openclaw\\openclaw.json"
+echo }>> "%USERPROFILE%\\.openclaw\\openclaw.json"
+
+echo.
+echo ========================================
+echo   安装完成!
+echo ========================================
+echo.
+echo 下一步：
+echo   1. 打开命令行
+echo   2. 输入: openclaw init my-agent
+echo   3. 输入: cd my-agent
+echo   4. 输入: openclaw gateway start
+echo.
+echo 文档: https://docs.openclaw.ai
+echo 社区: https://discord.com/invite/clawd
+echo.
+pause
+`;
+        }
+
+        function generateUnixScript() {
+            const providerConfig = config.provider === 'ollama'
+                ? `"baseUrl": "${config.apiKey}", "apiKey": "ollama-local", "api": "ollama"`
+                : `"apiKey": "${config.apiKey}"`;
+
+            return `#!/bin/bash
+# OpenClaw 一键安装脚本
+# 自动安装 OpenClaw 并配置 API Key
+
+set -e
+
+echo "================================"
+echo "  OpenClaw 一键安装"
+echo "================================"
+echo ""
+
+# 检查 Node.js
+if ! command -v node &> /dev/null; then
+    echo "❌ 未检测到 Node.js"
+    echo ""
+    echo "请先安装 Node.js："
+    echo "  macOS: brew install node"
+    echo "  或访问: https://nodejs.org/"
+    exit 1
+fi
+
+echo "✓ 检测到 Node.js: $(node -v)"
+
+# 设置镜像
+echo ""
+echo "配置 npm 镜像..."
+npm config set registry https://registry.npmmirror.com
+
+# 安装 OpenClaw
+echo ""
+echo "安装 OpenClaw..."
+npm install -g openclaw
+
+# 创建配置文件
+echo ""
+echo "创建配置文件..."
+mkdir -p ~/.openclaw
+
+cat > ~/.openclaw/openclaw.json << 'CONFIGEOF'
+{
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "${config.provider}": {
+        ${providerConfig}
+      }
+    }
+  }
+}
+CONFIGEOF
+
+echo ""
+echo "================================"
+echo "✅ 安装完成!"
+echo "================================"
+echo ""
+echo "下一步："
+echo "  1. openclaw init my-agent"
+echo "  2. cd my-agent"
+echo "  3. openclaw gateway start"
+echo ""
+echo "文档: https://docs.openclaw.ai"
+echo "社区: https://discord.com/invite/clawd"
+echo ""
+`;
+        }
+    </script>
 </body>
 </html>
