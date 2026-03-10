@@ -353,7 +353,7 @@ echo [4/4] 创建配置文件...
 if not exist "%USERPROFILE%\\.openclaw" mkdir "%USERPROFILE%\\.openclaw"
 powershell -Command "$json = @'
 ${jsonConfig}
-'@; $json | Out-File -FilePath (Join-Path $env:USERPROFILE '.openclaw' 'openclaw.json') -Encoding utf8"
+'@; $json | Out-File -FilePath (Join-Path (Join-Path $env:USERPROFILE '.openclaw') 'openclaw.json') -Encoding utf8"
 
 echo.
 echo ========================================
