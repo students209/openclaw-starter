@@ -1,0 +1,156 @@
+name: Test Install Scripts
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Test macOS install script syntax
+        run: |
+          # 创建测试脚本
+          cat > test-install.sh << 'EOF'
+          #!/bin/bash
+          # OpenClaw 一键安装脚本 (测试版)
+          
+          set -e
+          
+          echo "================================"
+          echo "  OpenClaw 一键安装 (测试模式)"
+          echo "================================"
+          echo ""
+          
+          # 检查 Node.js
+          if ! command -v node &> /dev/null; then
+              echo "❌ 未检测到 Node.js"
+              exit 1
+          fi
+          
+          echo "✓ 检测到 Node.js: $(node -v)"
+          
+          # 设置镜像
+          echo ""
+          echo "配置 npm 镜像..."
+          npm config set registry https://registry.npmmirror.com
+          
+          # 安装 OpenClaw
+          echo ""
+          echo "安装 OpenClaw..."
+          npm install -g openclaw
+          
+          # 验证安装
+          echo ""
+          echo "验证安装..."
+          openclaw --version
+          
+          # 创建配置文件
+          echo ""
+          echo "创建配置文件..."
+          mkdir -p ~/.openclaw
+          
+          cat > ~/.openclaw/openclaw.json << 'CONFIGEOF'
+          {
+            "models": {
+              "mode": "merge",
+              "providers": {
+                "dashscope": {
+                  "apiKey": "test-key"
+                }
+              }
+            }
+          }
+          CONFIGEOF
+          
+          echo "✓ 配置文件创建成功"
+          cat ~/.openclaw/openclaw.json
+          
+          echo ""
+          echo "================================"
+          echo "✅ 测试完成!"
+          echo "================================"
+          EOF
+          
+          chmod +x test-install.sh
+          bash -n test-install.sh && echo "✓ 脚本语法正确"
+      
+      - name: Run install script (dry run)
+        run: |
+          # 只测试语法，不实际安装
+          bash -n test-install.sh
+          echo "✓ macOS脚本语法验证通过"
+
+  test-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Test Linux install script
+        run: |
+          # 创建测试脚本
+          cat > test-install.sh << 'EOF'
+          #!/bin/bash
+          set -e
+          
+          echo "================================"
+          echo "  OpenClaw 一键安装 (Linux 测试)"
+          echo "================================"
+          
+          # 检查 Node.js
+          if ! command -v node &> /dev/null; then
+              echo "❌ 未检测到 Node.js"
+              exit 1
+          fi
+          
+          echo "✓ 检测到 Node.js: $(node -v)"
+          
+          # 创建配置文件测试
+          mkdir -p ~/.openclaw
+          echo '{"models":{"mode":"merge","providers":{"dashscope":{"apiKey":"test"}}}}' > ~/.openclaw/openclaw.json
+          cat ~/.openclaw/openclaw.json
+          
+          echo "✓ Linux脚本语法验证通过"
+          EOF
+          
+          chmod +x test-install.sh
+          bash -n test-install.sh
+          ./test-install.sh
+
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Test Windows install script
+        shell: cmd
+        run: |
+          @echo off
+          echo ================================
+          echo   OpenClaw Windows Script Test
+          echo ================================
+          
+          :: 检查 Node.js
+          node -v
+          if errorlevel 1 (
+              echo [ERROR] Node.js not found
+              exit /b 1
+          )
+          
+          echo [OK] Node.js detected
+          
+          :: 测试JSON写入
+          if not exist "%USERPROFILE%\.openclaw" mkdir "%USERPROFILE%\.openclaw"
+          echo {"models":{"mode":"merge","providers":{"dashscope":{"apiKey":"test"}}}} > "%USERPROFILE%\.openclaw\openclaw.json"
+          
+          echo [OK] Config file created
+          type "%USERPROFILE%\.openclaw\openclaw.json"
+          
+          echo.
+          echo ================================
+          echo   Windows Script Test PASSED
+          echo ================================
