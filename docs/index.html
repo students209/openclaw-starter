@@ -309,14 +309,15 @@
                 ? `"baseUrl": "${config.apiKey}", "apiKey": "ollama-local", "api": "ollama"`
                 : `"apiKey": "${config.apiKey}"`;
             
-            const jsonConfig = JSON.stringify({
+            // 使用转义的方式处理JSON
+            const jsonStr = JSON.stringify({
                 models: {
                     mode: "merge",
                     providers: {
-                        [config.provider]: JSON.parse(`{${providerConfig}}`)
+                        [config.provider]: { apiKey: config.apiKey }
                     }
                 }
-            });
+            }).replace(/"/g, '\\"');
             
             return `@echo off
 chcp 65001 >nul 2>nul
@@ -351,9 +352,7 @@ call npm install -g openclaw
 echo.
 echo [4/4] 创建配置文件...
 if not exist "%USERPROFILE%\\.openclaw" mkdir "%USERPROFILE%\\.openclaw"
-powershell -Command "$json = @'
-${jsonConfig}
-'@; $json | Out-File -FilePath (Join-Path (Join-Path $env:USERPROFILE '.openclaw') 'openclaw.json') -Encoding utf8"
+> "%USERPROFILE%\\.openclaw\\openclaw.json" echo {"models":{"mode":"merge","providers":{"${config.provider}":{"apiKey":"${config.apiKey}"}}}}
 
 echo.
 echo ========================================
