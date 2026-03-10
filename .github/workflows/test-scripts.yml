@@ -48,7 +48,7 @@ jobs:
       
       - name: Test Linux install script
         run: |
-          # 创建测试脚本
+          # 测试安装脚本（不实际安装，只测试语法和流程）
           cat > test-install.sh << 'EOF'
           #!/bin/bash
           set -e
@@ -65,6 +65,8 @@ jobs:
           npm install -g openclaw
           
           echo "[3/3] 验证安装..."
+          # Linux npm全局安装可能需要刷新PATH
+          export PATH="$(npm config get prefix)/bin:$PATH"
           if ! command -v openclaw &> /dev/null; then
               echo "[警告] 安装未成功"
               exit 1

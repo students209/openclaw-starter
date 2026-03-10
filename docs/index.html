@@ -280,6 +280,9 @@ echo "[2/3] 安装 OpenClaw..."
 npm config set registry https://registry.npmmirror.com
 npm install -g openclaw
 
+# 刷新PATH
+export PATH="$(npm config get prefix)/bin:$PATH"
+
 # 验证安装
 echo ""
 echo "[3/3] 验证安装..."
