@@ -309,6 +309,8 @@
                 ? `"baseUrl": "${config.apiKey}", "apiKey": "ollama-local", "api": "ollama"`
                 : `"apiKey": "${config.apiKey}"`;
             
+            const jsonConfig = `{"models":{"mode":"merge","providers":{"${config.provider}":{${providerConfig}}}}}`;
+            
             return `@echo off
 chcp 65001 >nul
 echo ========================================
@@ -317,8 +319,8 @@ echo ========================================
 echo.
 
 :: 检查 Node.js
-where node >nul 2>nul
-if %errorlevel% neq 0 (
+node -v >nul 2>nul
+if errorlevel 1 (
     echo [错误] 未检测到 Node.js
     echo 请先安装 Node.js: https://nodejs.org/
     pause
@@ -342,17 +344,7 @@ npm install -g openclaw
 echo.
 echo [4/4] 创建配置文件...
 if not exist "%USERPROFILE%\\.openclaw" mkdir "%USERPROFILE%\\.openclaw"
-
-echo {> "%USERPROFILE%\\.openclaw\\openclaw.json"
-echo   "models": {>> "%USERPROFILE%\\.openclaw\\openclaw.json"
-echo     "mode": "merge",>> "%USERPROFILE%\\.openclaw\\openclaw.json"
-echo     "providers": {>> "%USERPROFILE%\\.openclaw\\openclaw.json"
-echo       "${config.provider}": {>> "%USERPROFILE%\\.openclaw\\openclaw.json"
-echo         ${providerConfig}>> "%USERPROFILE%\\.openclaw\\openclaw.json"
-echo       }>> "%USERPROFILE%\\.openclaw\\openclaw.json"
-echo     }>> "%USERPROFILE%\\.openclaw\\openclaw.json"
-echo   }>> "%USERPROFILE%\\.openclaw\\openclaw.json"
-echo }>> "%USERPROFILE%\\.openclaw\\openclaw.json"
+echo ${jsonConfig} > "%USERPROFILE%\\.openclaw\\openclaw.json"
 
 echo.
 echo ========================================
