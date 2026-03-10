@@ -135,20 +135,25 @@ jobs:
           echo ================================
           
           :: 检查 Node.js
-          node -v
-          if errorlevel 1 (
+          where node >nul 2>nul
+          if %ERRORLEVEL% neq 0 (
               echo [ERROR] Node.js not found
               exit /b 1
           )
           
           echo [OK] Node.js detected
+          node -v
           
-          :: 测试JSON写入
+          :: 测试PowerShell JSON写入
+          echo [TEST] Testing PowerShell JSON write...
           if not exist "%USERPROFILE%\.openclaw" mkdir "%USERPROFILE%\.openclaw"
-          echo {"models":{"mode":"merge","providers":{"dashscope":{"apiKey":"test"}}}} > "%USERPROFILE%\.openclaw\openclaw.json"
+          powershell -NoProfile -Command "Set-Content -Path \"$env:USERPROFILE\.openclaw\openclaw.json\" -Value '{\"models\":{\"mode\":\"merge\",\"providers\":{\"dashscope\":{\"apiKey\":\"test\"}}}}' -Encoding UTF8"
           
           echo [OK] Config file created
           type "%USERPROFILE%\.openclaw\openclaw.json"
+          
+          :: 验证JSON格式
+          powershell -NoProfile -Command "Get-Content '$env:USERPROFILE\.openclaw\openclaw.json' | ConvertFrom-Json | Out-Null; if ($?) { Write-Host '[OK] JSON format valid' } else { exit 1 }"
           
           echo.
           echo ================================
